@@ -1,0 +1,16 @@
+projectfiles/
+lib/
+bin/
+depen/
+genie.exe
+sublimeproject/
+SeriousEngineSolution.sdf
+SeriousEngineSolution.sln
+SeriousEngineSolution.opensdf
+data/img/
+data/models/
+SeriousEngineSolution.v12.suo
+src/App/thread_test.cc
+data/imported/
+.vs/SeriousEngineSolution/v14/.suo
+data/scenes/

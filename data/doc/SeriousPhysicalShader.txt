@@ -1,0 +1,133 @@
+-----------------------------
+SeriousPhysicalShader v1
+-----------------------------
+
++BRDF(bidirectional reflectance distribution function):mathematical aproximation on how surfaces reac to light.Differents methods have different computational costs,for example Phong or Lamber have a low cost but lower precission. In the other hand Cook&Torrence have a worse performance but much more precission.
+
+-Cook&Torrance model:it uses the half vector for specular highlights(more aquarte),it uses the fresnel effect,it adds micro imperfections to the surface (facets)
+
+Rs=(F/Pi) * ((D*G) / (N·L)*(N·V))
+
+F:fresnel term
+G:geometric attenuation factor
+D:micro facet distribution
+N:surface normal
+L:vector from the current point to the light
+V:vector from the current point to the light
+*H:half vector (between V and L)
+
+Fresnel(F)
+----------
+Represents the relation between the angle that you look at a surface and the amount of reflectivity you see.
+We use aproximations of the real function.
+
+float R = max(0, min(1, bias + scale * (1.0 + (I • N))power))
+I:vector from the eye to a point on the surface
+N:world space normal of the surface
+Bias,scale,power:variables to tweak the effect (the bias parameter could be deleted as does not improve results)
+
+Finally lerp the "Diffuse color" with the fresnell.
+mix(diffuseColor,reflectColor,R)
+
+http://kylehalladay.com/blog/tutorial/2014/02/18/Fresnel-Shaders-From-The-Ground-Up.html
+
+
+Geometric Atenuation(G)
+----------------------
+Represents the shadowing and self masking of one facet by another.
+float G = min(1, ((2*(N·H)*(N·V))/(V·H)), (2*N·H*N·L/V·H));
+
+
+Micro facet distribution(D)
+--------------------------
+Describes the statical probability that microfacets are oriented towards the specular half-angle vector H.
+float alpha = acos(N·H)
+float D = gaussConstant * exp(-(alpha*alpha)/(m*m))
+
+
+Putting it together
+-------------------
+We should have a float cook = 0.0 factor, and loop throught all the lights and add to this factor.
+cook += Cl*(F*D*G)/(PI*NdotV);
+
+Output color:
+Oi = opacity;
+vec3 outColor = (Kd*diffuseColor*diffuse(Nn)+Ks*specularColor*cook) * Oi;
+
+
+http://renderman.pixar.com/view/cook-torrance-shader
+
+------------------------------------
+
+BlingPhong
+EnviromentMap
+Fresnel
+Normal Map for roughness
+Lambertian (diffuse reflectance)
+
+
+Metalic:
+100% spec 0% diffuse
+
+NoMetal:
+0% spec 100% diffuse
+
+SemiMetal
+50% spec 50% diffuse
+
+It cant add more than 100%
+
+-----------------------------
+
+CookTorrance v.2:
+http://ruh.li/GraphicsCookTorrance.html
+
+r=ambient+dot(n,l)*(k+(1-k)*r)
+
+rs=specular component:
+
+
+rs=((F*D*G)/(pi*dot(n,l)*dot(n,v)))
+F=fresnel 
+D=roughness microfacet distribution
+G=geometrial attenuation
+
+F=USE MY IMPLEMENTATION!!!
+
+D=(1/(pi*pow(m,2)*pow(dot(n,h),4))) *
+pow(e,((pow(dot(n,h),2))/(pow(m,2)*pow(dot(n,h),2))))
+
+G=min(1,Gb,Gc)
+Gb=(2*dot(n,h)*dot(n,v))/(dot(v,h))
+Gb=(2*dot(n,h)*dot(n,l))/(dot(l,h))
+
+
+
+-----------------------------
+Physical Shader v2
+-----------------------------
+
+In computer graphics,physical shading is achieved using the rendering equation(https://en.wikipedia.org/wiki/Rendering_equation).
+Actually,a simplified version that can be made in real time.
+
+This equations takes into account the radiance of the scene (the amount of light emited).The radiance is expensive to calculate in real time so we use cubemaps to sample the radiance.
+We cant have one cubemap for each pixel,so we will have a few ones,and select the clossest one.We should sample our position correcting it with the world position of the cube map.
+
+We have to integrate all the radiance of the scene.
+We will do it using a cube map
+
+vec4 GetIrradiance()
+{
+		
+}
+
+void main()
+{
+	
+}
+
+
+
+
+
+

@@ -1,0 +1,42 @@
+Timing:
+----------------
+float initT = renderManRef->GetTime() * 1000;
+printf("RunDl:%f ms.\n", renderManRef->GetTime() * 1000 - initT);
+----------------
+
+#####################################
+10/2/2016
+
+Buddhas*7:
+·FPS:130 (7.6ms for each frame)
+·UpdateComponents:0.19ms,0.21ms
+·Render:6.9ms,7.3ms (PreRender,DoRender,PostRender)
+	·RunDL
+	·CleanDl
+·AddTask&Wait:0.17ms,0.25ms
+
+Buddhas*100:
+·FPS:13(76.9ms for each frame)
+·UpdateComponents:2.9ms,3.2ms
+·Render:67ms,70ms (PreRender,DoRender,PostRender)
+	·RunDl:64ms
+	·CleanDl:0.3ms,0.9 ms
+·AddTask&Wait:1.5ms,2.5ms
+
+
+Cube*100 (low poly)
+·FPS:110(10ms for each frame)
+·UpdateComponents:2.7ms,3.0ms
+·Render:2.5ms,3ms
+·AddTask&Wait:0.9ms,3.5ms(variates a lot)
+
+#####################################
+10/2/2016
+
+300 static cubes + dirty flag:
+·UpdateComponents:0.03ms
+
+300 static cubes (no dirty flag)
+·UpdateComponents:8.5ms!!!
+
+#####################################
